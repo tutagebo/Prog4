@@ -10,25 +10,18 @@ typedef struct {
     char address[128];
 } HighSchool;
 
-void bubbleSortHighschool (HighSchool highschoolArray[], int array_size, int mode);
-void swapHighschool (HighSchool *a, HighSchool *b);
-
-void bubbleSortHighschool (HighSchool highschoolArray[], int array_size, int mode) {
-    int i, j;
-    for (i = 0; i < array_size - 1; i++){
-        for (j = array_size - 1; j >= i + 1; j--){
-            if (strcmp(highschoolArray[j].name, highschoolArray[j-1].name) < 0) {
-                swapHighschool(&highschoolArray[j], &highschoolArray[j-1]);
-            }
+void searchHighSchool(HighSchool *highschool, int count, char *search) {
+    for (int i = 0; i < count; i++) {
+        if (strcmp(highschool[i].ID, search) == 0 || strcmp(highschool[i].name, search) == 0 || strcmp(highschool[i].address, search) == 0 ) {
+            printf("ID: %s\n", highschool[i].ID);
+            printf("Prefecture: %d\n", highschool[i].prefecture);
+            printf("Type: %d\n", highschool[i].type);
+            printf("Name: %s\n", highschool[i].name);
+            printf("Address: %s\n", highschool[i].address);
+            return;
         }
     }
-}
-
-void swapHighschool (HighSchool *a, HighSchool *b) {
-    HighSchool tmp;
-    tmp = *a;
-    *a = *b;
-    *b = tmp;
+    printf("High school not found.\n");
 }
 
 int main (int argc, char *argv[]) {
@@ -55,13 +48,8 @@ int main (int argc, char *argv[]) {
     HighSchool highschool[10000];
     while (fgets(line, sizeof(line), rfp)!= NULL) {
         sscanf(line, "%[^,],%d,%d,%[^,],%[^\n]", highschool[count].ID, &highschool[count].prefecture, &highschool[count].type, highschool[count].name, highschool[count].address);
-        //printf("%s %s %d %d %s\n", highschool[count].name, highschool[count].ID, highschool[count].prefecture, highschool[count].type, highschool[count].address);
         fprintf(wfp,"%s %s %d %d %s\n", highschool[count].name, highschool[count].ID, highschool[count].prefecture, highschool[count].type, highschool[count].address);
         count++;
-    }
-    bubbleSortHighschool(highschool, count, 0);
-    for(int i = 0; i < count; i++) {
-        printf("%s %s %d %d %s\n", highschool[i].name, highschool[i].ID, highschool[i].prefecture, highschool[i].type, highschool[i].address);
     }
     fclose(rfp);
     fclose(wfp);
