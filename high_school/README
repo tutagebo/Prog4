@@ -1,0 +1,46 @@
+コマンド
+syntax
+./h.out <mode> <input_file> [output_file|search_str|append_file|remove_file] [sort_mode]
+
+課題1
+syntax
+./h.out load-only <input_file>
+usage
+./h.out load-only highschool_list.csv
+
+課題2
+syntax
+./h.out output-only <input_file> <output_file>
+usage
+./h.out output-only highschool_list.csv highschool_output.csv
+
+課題3
+syntax
+./h.out sort <input_file> <output_file> <sort_mode>
+usage
+./h.out sort highschool_list.csv highschool_output.csv 0
+sort mode index
+0 name ascending
+1 name descending
+2 address ascending
+3 address descending
+4 id ascending
+5 id descending
+
+
+課題4
+syntax
+./h.out search <input_file> <search_str>
+usage
+./h.out search highschool_list.csv D107320161029
+
+課題5
+syntax
+./h.out append <input_file> <append_file>
+usage
+./h.out append highschool_list.csv append_list.csv
+
+課題6
+syntax
+./h.out append <input_file> <remove_file>
+usage./h.out append highschool_list.csv append_list.csv

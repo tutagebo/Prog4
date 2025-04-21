@@ -114,10 +114,39 @@ void searchHighSchool(HighSchool *highschool, int count, char *search) {
     printf("High school not found.\n");
 }
 
+int appendHighSchool(HighSchool *highschool, int count, FILE *rfp) {
+    char line[512];
+    while (fgets(line, sizeof(line), rfp)!= NULL) {
+        HighSchool *tmp = realloc(highschool, sizeof(HighSchool) * (count + 1));
+        if (tmp == NULL) {
+            printf("Memory allocation error\n");
+            free(highschool);
+            return 0;
+        }
+        highschool = tmp;
+        sscanf(line, "%[^,],%d,%d,%[^,],%[^\n]", highschool[count].ID, &highschool[count].prefecture, &highschool[count].type, highschool[count].name, highschool[count].address);
+        count++;
+    }
+    return count;
+}
+
+int removeHighSchool(HighSchool *highschool, int count, char *ID) {
+    for (int i = 0; i < count; i++) {
+        if (strcmp(highschool[i].ID, ID) == 0) {
+            for (int j = i; j < count - 1; j++) {
+                highschool[j] = highschool[j + 1];
+            }
+            count--;
+            break;
+        }
+    }
+    return count;
+}
+
 int main (int argc, char *argv[]) {
     FILE *rfp, *wfp;
     char *mode = argv[1];
-    HighSchool highschool[10000];
+    HighSchool *highschool = malloc(sizeof(HighSchool) * 10000);
     char *readFile = argv[2];
     // open read file
     rfp = fopen(readFile, "r");
@@ -163,6 +192,38 @@ int main (int argc, char *argv[]) {
         char *search = argv[3];
         searchHighSchool(highschool, count, search);
     }
+    if(strcmp(mode, "append") == 0) {
+        char *appendFile = argv[3];
+        FILE* afp = fopen(appendFile, "r");
+        if (afp == NULL) {
+            printf("AppendFile open error\n");
+            return 1;
+        }
+        count = appendHighSchool(highschool, count, afp);
+        fclose(afp);
+        for(int i = 0; i < count; i++) {
+            printf("%s %s %d %d %s\n", highschool[i].name, highschool[i].ID, highschool[i].prefecture, highschool[i].type, highschool[i].address);
+        }
+    }
+    if(strcmp(mode, "remove") == 0) {
+        char *removeFile = argv[3];
+        FILE* removefp = fopen(removeFile, "r");
+        if (removefp == NULL) {
+            printf("RemoveFile open error\n");
+            return 1;
+        }
+        HighSchool removeList[1000];
+        int removeCount = loadHighSchoolData(removeList, removefp);
+
+        for(int i = 0; i < removeCount; i++) {
+            count = removeHighSchool(highschool, count, removeList[i].ID);
+        }
+        fclose(removefp);
+        for(int i = 0; i < count; i++) {
+            printf("%s %s %d %d %s\n", highschool[i].name, highschool[i].ID, highschool[i].prefecture, highschool[i].type, highschool[i].address);
+        }
+    }
+    free(highschool);
     fclose(rfp);
     return 0;
 }
